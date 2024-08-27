@@ -1,9 +1,11 @@
 function Gameboard() {
+  const row = 3;
+  const column = 3;
   const board = [];
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < row; i++) {
     board[i] = [];
-    for (let j = 0; j < 3; j++) {
-      board[i][j] = 0;
+    for (let j = 0; j < column; j++) {
+      board[i].push(Cell());
     }
   }
 
@@ -12,8 +14,23 @@ function Gameboard() {
   const markBoard = () => {};
 
   const printBoard = () => {
-    console.log(board);
+    const boardWithCellValues = board.map((row) =>
+      row.map((cell) => cell.getValue())
+    );
+    console.log(boardWithCellValues);
   };
 
   return { getBoard, markBoard, printBoard };
+}
+
+function Cell() {
+  let value = 0;
+
+  const addMark = (player) => {
+    value = player;
+  };
+
+  const getValue = () => value;
+
+  return { addMark, getValue };
 }
