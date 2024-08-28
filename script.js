@@ -11,7 +11,11 @@ const board = (function Gameboard() {
 
   const getBoard = () => board;
 
-  const markBoard = () => {};
+  const markBoard = (row, column, player) => {
+    if (board[row][column].getValue !== 0) {
+      console.log('wrong!');
+    }
+  };
 
   const printBoard = () => {
     const boardWithCellValues = board.map((row) =>
@@ -39,7 +43,6 @@ const game = (function GameController(
   playerOneName = 'Player One',
   playerTwoName = 'Player Two'
 ) {
-  // const board = Gameboard();
 
   const players = [
     {
