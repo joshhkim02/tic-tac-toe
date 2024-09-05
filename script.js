@@ -43,7 +43,6 @@ const game = (function GameController(
   playerOneName = 'Player One',
   playerTwoName = 'Player Two'
 ) {
-
   const players = [
     {
       name: playerOneName,
@@ -57,11 +56,12 @@ const game = (function GameController(
 
   let activePlayer = players[0];
 
+
+
   const switchPlayerTurn = () => {
     // Shorthand: if activePlayer is player 1, switch to player 2; else if activePlayer is player 2, switch to player 1
     activePlayer = activePlayer === players[0] ? players[1] : players[0];
   };
-
   const getActivePlayer = () => activePlayer;
 
   const printNewRound = () => {
@@ -69,11 +69,12 @@ const game = (function GameController(
     console.log(`${getActivePlayer().name}'s turn.`);
   };
 
+  // going to need to put row, column in parameters once DOM is implemented
   const playRound = () => {
     // IMPLEMENT GAME LOGIC HERE
-    gameBoard.markBoard(0, 0, getActivePlayer().mark);
-    gameBoard.markBoard(0, 1, getActivePlayer().mark);
-    gameBoard.markBoard(0, 2, getActivePlayer().mark);
+    // let rowChoice = Number(prompt('row choice:'));
+    // let columnChoice = Number(prompt('column choice:'));
+    gameBoard.markBoard(rowChoice, columnChoice, getActivePlayer().mark);
     switchPlayerTurn();
     printNewRound();
   };
@@ -81,8 +82,11 @@ const game = (function GameController(
   // Initial play game message
   printNewRound();
   
-
   return { playRound, getActivePlayer };
 })();
 
 game.playRound();
+game.playRound();
+game.playRound();
+
+
