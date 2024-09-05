@@ -1,20 +1,19 @@
-const board = (function Gameboard() {
+const gameBoard = (function Gameboard() {
   const row = 3;
   const column = 3;
   const board = [];
+  // Create 2D Array / Board
   for (let i = 0; i < row; i++) {
     board[i] = [];
     for (let j = 0; j < column; j++) {
-      board[i].push(Cell());
+      board[i].push(Cell());  // Pushing a cell here so we can get the value
     }
   }
 
   const getBoard = () => board;
 
   const markBoard = (row, column, player) => {
-    if (board[row][column].getValue !== 0) {
-      console.log('wrong!');
-    }
+    board[row][column].addMark(player);
   };
 
   const printBoard = () => {
@@ -26,6 +25,7 @@ const board = (function Gameboard() {
 
   return { getBoard, markBoard, printBoard };
 })();
+
 
 function Cell() {
   let value = 0;
@@ -65,19 +65,24 @@ const game = (function GameController(
   const getActivePlayer = () => activePlayer;
 
   const printNewRound = () => {
-    board.printBoard();
+    gameBoard.printBoard();
     console.log(`${getActivePlayer().name}'s turn.`);
   };
 
   const playRound = () => {
-    // Todo: round logic
+    // IMPLEMENT GAME LOGIC HERE
+    gameBoard.markBoard(0, 0, getActivePlayer().mark);
+    gameBoard.markBoard(0, 1, getActivePlayer().mark);
+    gameBoard.markBoard(0, 2, getActivePlayer().mark);
     switchPlayerTurn();
     printNewRound();
   };
 
   // Initial play game message
   printNewRound();
+  
 
   return { playRound, getActivePlayer };
 })();
 
+game.playRound();
