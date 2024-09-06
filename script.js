@@ -56,8 +56,6 @@ const game = (function GameController(
 
   let activePlayer = players[0];
 
-
-
   const switchPlayerTurn = () => {
     // Shorthand: if activePlayer is player 1, switch to player 2; else if activePlayer is player 2, switch to player 1
     activePlayer = activePlayer === players[0] ? players[1] : players[0];
@@ -69,14 +67,18 @@ const game = (function GameController(
     console.log(`${getActivePlayer().name}'s turn.`);
   };
 
-  // going to need to put row, column in parameters once DOM is implemented
   const playRound = () => {
     // IMPLEMENT GAME LOGIC HERE
-    // let rowChoice = Number(prompt('row choice:'));
-    // let columnChoice = Number(prompt('column choice:'));
-    gameBoard.markBoard(rowChoice, columnChoice, getActivePlayer().mark);
-    switchPlayerTurn();
-    printNewRound();
+    let rowChoice = Number(prompt('row choice:'));
+    let columnChoice = Number(prompt('column choice:'));
+    if (!(gameBoard.getBoard()[rowChoice][columnChoice].getValue() === 0)) {
+      console.log('That spot is occupied already.');
+      playRound();
+    } else {
+      gameBoard.markBoard(rowChoice, columnChoice, getActivePlayer().mark);
+      switchPlayerTurn();
+      printNewRound();
+    }
   };
 
   // Initial play game message
@@ -87,6 +89,6 @@ const game = (function GameController(
 
 game.playRound();
 game.playRound();
-game.playRound();
+
 
 
