@@ -16,6 +16,11 @@ const gameBoard = (function Gameboard() {
     board[row][column].addMark(player);
   };
 
+  const printRow = () => {
+    const rowWithCellValues = board[0].map((cell) => cell.getValue());
+    console.log(rowWithCellValues);
+  }
+
   const printBoard = () => {
     const boardWithCellValues = board.map((row) =>
       row.map((cell) => cell.getValue())
@@ -23,7 +28,7 @@ const gameBoard = (function Gameboard() {
     console.log(boardWithCellValues);
   };
 
-  return { getBoard, markBoard, printBoard };
+  return { getBoard, markBoard, printBoard, printRow };
 })();
 
 
@@ -67,9 +72,22 @@ const game = (function GameController(
     console.log(`${getActivePlayer().name}'s turn.`);
   };
 
+  const checkHorizontal = () => {
+    for (let i = 0; i < 3; i++) {
+      let currentRow = gameBoard.getBoard()[i].map((cell) => cell.getValue());
+      let p1Winner = currentRow => currentRow.every( v => v === 1);
+      let p2Winner = currentRow => currentRow.every( v => v === 2);
+      if (p1Winner(currentRow) === true) {
+        console.log('Player 1 wins!');
+      } else if (p2Winner(currentRow) === true) {
+        console.log('Player 2 wins!');
+      }
+    }
+  }
+
   const playRound = () => {
     // IMPLEMENT GAME LOGIC HERE
-    let rowChoice = Number(prompt('row choice:'));
+    let rowChoice = Number(prompt('row choice:')); 
     let columnChoice = Number(prompt('column choice:'));
     if (!(gameBoard.getBoard()[rowChoice][columnChoice].getValue() === 0)) {
       console.log('That spot is occupied already.');
@@ -78,6 +96,7 @@ const game = (function GameController(
       gameBoard.markBoard(rowChoice, columnChoice, getActivePlayer().mark);
       switchPlayerTurn();
       printNewRound();
+      checkHorizontal();
     }
   };
 
@@ -87,8 +106,15 @@ const game = (function GameController(
   return { playRound, getActivePlayer };
 })();
 
+game.playRound(); // 0, 0
+game.playRound(); // 1, 0
+game.playRound(); // 0, 1
+game.playRound(); // 1, 1
+game.playRound(); // 0, 2
 game.playRound();
-game.playRound();
+
+
+
 
 
 
