@@ -98,6 +98,37 @@ const game = (function GameController(
     }
   }
 
+  const checkFirstDiagonal = () => {
+    let diagonal1 = gameBoard.getBoard()[0][0].getValue();
+    let diagonal2 = gameBoard.getBoard()[1][1].getValue();
+    let diagonal3 = gameBoard.getBoard()[2][2].getValue();
+
+    if (diagonal1 && diagonal2 && diagonal3 === 1) {
+      console.log('player 1 wins');
+    } else if (diagonal1 && diagonal2 && diagonal3 === 2) {
+      console.log('player 2 wins');
+    }
+  }
+
+  const checkSecondDiagonal = () => {
+    let diagonal1 = gameBoard.getBoard()[0][2].getValue();
+    let diagonal2 = gameBoard.getBoard()[1][1].getValue();
+    let diagonal3 = gameBoard.getBoard()[2][0].getValue();
+
+    if (diagonal1 && diagonal2 && diagonal3 === 1) {
+      console.log('player 1 wins');
+    } else if (diagonal1 && diagonal2 && diagonal3 === 2) {
+      console.log('player 2 wins');
+    }
+  }
+
+  const checkWinner = () => {
+    checkHorizontal();
+    checkVertical();
+    checkFirstDiagonal();
+    checkSecondDiagonal();
+  }
+
   const playRound = () => {
     // IMPLEMENT GAME LOGIC HERE
     let rowChoice = Number(prompt('row choice:')); 
@@ -109,8 +140,7 @@ const game = (function GameController(
       gameBoard.markBoard(rowChoice, columnChoice, getActivePlayer().mark);
       switchPlayerTurn();
       printNewRound();
-      checkHorizontal();
-      checkVertical();
+      checkWinner();
     }
   };
 
@@ -120,12 +150,12 @@ const game = (function GameController(
   return { playRound, getActivePlayer };
 })();
 
-game.playRound(); // 0, 0
-game.playRound(); // 1, 0
-game.playRound(); // 0, 1
-game.playRound(); // 1, 1
-game.playRound(); // 0, 2
-game.playRound();
+game.playRound(); // p1
+game.playRound(); // p2
+game.playRound(); // p1
+game.playRound(); // p2
+game.playRound(); // p1
+game.playRound(); // p2
 
 
 
