@@ -74,12 +74,25 @@ const game = (function GameController(
 
   const checkHorizontal = () => {
     for (let i = 0; i < 3; i++) {
-      let currentRow = gameBoard.getBoard()[i].map((cell) => cell.getValue());
+      let currentRow = gameBoard.getBoard()[i].map((cell) => cell.getValue()); // iterate through current row and return every value inside that row
       let p1Winner = currentRow => currentRow.every( v => v === 1);
       let p2Winner = currentRow => currentRow.every( v => v === 2);
       if (p1Winner(currentRow) === true) {
         console.log('Player 1 wins!');
       } else if (p2Winner(currentRow) === true) {
+        console.log('Player 2 wins!');
+      }
+    }
+  }
+
+  const checkVertical = () => {
+    for (let i = 0; i < 3; i++) {
+      let currentColumn = gameBoard.getBoard().map((value) => value[i].getValue()); // iterate through current column and return every value inside that column
+      let p1Winner = currentColumn => currentColumn.every( v => v === 1);
+      let p2Winner = currentColumn => currentColumn.every( v => v === 2);
+      if (p1Winner(currentColumn) === true) {
+        console.log('Player 1 wins!');
+      } else if (p2Winner(currentColumn) === true) {
         console.log('Player 2 wins!');
       }
     }
@@ -97,6 +110,7 @@ const game = (function GameController(
       switchPlayerTurn();
       printNewRound();
       checkHorizontal();
+      checkVertical();
     }
   };
 
