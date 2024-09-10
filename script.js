@@ -174,8 +174,6 @@ const game = (function GameController(
   return { playGame, getActivePlayer };
 })();
 
-game.playGame();
-
 
 
 
