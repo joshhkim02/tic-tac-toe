@@ -78,9 +78,9 @@ const game = (function GameController(
       let p1Winner = currentRow => currentRow.every( v => v === 1);
       let p2Winner = currentRow => currentRow.every( v => v === 2);
       if (p1Winner(currentRow) === true) {
-        console.log('Player 1 wins!');
+        return 1;
       } else if (p2Winner(currentRow) === true) {
-        console.log('Player 2 wins!');
+        return 2;
       }
     }
   }
@@ -91,10 +91,10 @@ const game = (function GameController(
       let p1Winner = currentColumn => currentColumn.every( v => v === 1);
       let p2Winner = currentColumn => currentColumn.every( v => v === 2);
       if (p1Winner(currentColumn) === true) {
-        console.log('Player 1 wins!');
+        return 1;
       } else if (p2Winner(currentColumn) === true) {
-        console.log('Player 2 wins!');
-      }
+        return 2;
+      } 
     }
   }
 
@@ -103,11 +103,11 @@ const game = (function GameController(
     let diagonal2 = gameBoard.getBoard()[1][1].getValue();
     let diagonal3 = gameBoard.getBoard()[2][2].getValue();
 
-    if (diagonal1 && diagonal2 && diagonal3 === 1) {
-      console.log('player 1 wins');
-    } else if (diagonal1 && diagonal2 && diagonal3 === 2) {
-      console.log('player 2 wins');
-    }
+    if (diagonal1 === 1 && diagonal2 === 1 && diagonal3 === 1) {
+      return 1;
+    } else if (diagonal1 === 2 && diagonal2 === 2 && diagonal3 === 2) {
+      return 2;
+    } 
   }
 
   const checkSecondDiagonal = () => {
@@ -116,47 +116,65 @@ const game = (function GameController(
     let diagonal3 = gameBoard.getBoard()[2][0].getValue();
 
     if (diagonal1 && diagonal2 && diagonal3 === 1) {
-      console.log('player 1 wins');
+      return 1;
     } else if (diagonal1 && diagonal2 && diagonal3 === 2) {
-      console.log('player 2 wins');
-    }
+      return 2
+    } 
+  }
+
+  const checkFull = () => {
+    return gameBoard.getBoard().every(row => row.every(cell => cell.getValue() !== 0));
   }
 
   const checkWinner = () => {
-    checkHorizontal();
-    checkVertical();
-    checkFirstDiagonal();
-    checkSecondDiagonal();
+    let horizontal = checkHorizontal();
+    let vertical = checkVertical();
+    let firstDiagonal = checkFirstDiagonal();
+    let secondDiagonal = checkSecondDiagonal();
+
+    if (horizontal === 1 || vertical === 1 || firstDiagonal === 1 || secondDiagonal === 1) {
+      return 1;
+    } else if (horizontal === 2 || vertical === 2 || firstDiagonal === 2 || secondDiagonal === 2) {
+      return 2;
+    } else { return 0; }
   }
 
-  const playRound = () => {
-    // IMPLEMENT GAME LOGIC HERE
-    let rowChoice = Number(prompt('row choice:')); 
-    let columnChoice = Number(prompt('column choice:'));
-    if (!(gameBoard.getBoard()[rowChoice][columnChoice].getValue() === 0)) {
-      console.log('That spot is occupied already.');
-      playRound();
-    } else {
-      gameBoard.markBoard(rowChoice, columnChoice, getActivePlayer().mark);
-      switchPlayerTurn();
-      printNewRound();
-      checkWinner();
+  const playGame = () => {
+    let checkWin = checkWinner();
+
+    while (checkWin === 0 && !checkFull()) {
+      let rowChoice = Number(prompt('Row choice:'));
+      let columnChoice = Number(prompt('Column choice:'));
+
+      if (!(gameBoard.getBoard()[rowChoice][columnChoice].getValue() === 0)) {
+        console.log('That spot is occupied already.');
+        continue; // Asks for input again
+      } else {
+        gameBoard.markBoard(rowChoice, columnChoice, getActivePlayer().mark);
+        checkWin = checkWinner();
+
+        if (checkWin !== 0) {
+          gameBoard.printBoard();
+          console.log(`${getActivePlayer().name} wins!`);
+          break;
+        } else if (checkFull()) {
+          console.log('The game is a draw!');
+          break;
+        }
+
+        switchPlayerTurn();
+        printNewRound();
+      }
     }
   };
 
   // Initial play game message
   printNewRound();
   
-  return { playRound, getActivePlayer };
+  return { playGame, getActivePlayer };
 })();
 
-game.playRound(); // p1
-game.playRound(); // p2
-game.playRound(); // p1
-game.playRound(); // p2
-game.playRound(); // p1
-game.playRound(); // p2
-
+game.playGame();
 
 
 
