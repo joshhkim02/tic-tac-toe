@@ -6,7 +6,7 @@ const gameBoard = (function Gameboard() {
   for (let i = 0; i < row; i++) {
     board[i] = [];
     for (let j = 0; j < column; j++) {
-      board[i].push(Cell());  // Pushing a cell here so we can get the value
+      board[i].push(Cell()); // Pushing a cell here so we can get the value
     }
   }
 
@@ -19,7 +19,7 @@ const gameBoard = (function Gameboard() {
   const printRow = () => {
     const rowWithCellValues = board[0].map((cell) => cell.getValue());
     console.log(rowWithCellValues);
-  }
+  };
 
   const printBoard = () => {
     const boardWithCellValues = board.map((row) =>
@@ -30,7 +30,6 @@ const gameBoard = (function Gameboard() {
 
   return { getBoard, markBoard, printBoard, printRow };
 })();
-
 
 function Cell() {
   let value = 0;
@@ -75,28 +74,30 @@ const game = (function GameController(
   const checkHorizontal = () => {
     for (let i = 0; i < 3; i++) {
       let currentRow = gameBoard.getBoard()[i].map((cell) => cell.getValue()); // iterate through current row and return every value inside that row
-      let p1Winner = currentRow => currentRow.every( v => v === 1);
-      let p2Winner = currentRow => currentRow.every( v => v === 2);
+      let p1Winner = (currentRow) => currentRow.every((v) => v === 1);
+      let p2Winner = (currentRow) => currentRow.every((v) => v === 2);
       if (p1Winner(currentRow) === true) {
         return 1;
       } else if (p2Winner(currentRow) === true) {
         return 2;
       }
     }
-  }
+  };
 
   const checkVertical = () => {
     for (let i = 0; i < 3; i++) {
-      let currentColumn = gameBoard.getBoard().map((value) => value[i].getValue()); // iterate through current column and return every value inside that column
-      let p1Winner = currentColumn => currentColumn.every( v => v === 1);
-      let p2Winner = currentColumn => currentColumn.every( v => v === 2);
+      let currentColumn = gameBoard
+        .getBoard()
+        .map((value) => value[i].getValue()); // iterate through current column and return every value inside that column
+      let p1Winner = (currentColumn) => currentColumn.every((v) => v === 1);
+      let p2Winner = (currentColumn) => currentColumn.every((v) => v === 2);
       if (p1Winner(currentColumn) === true) {
         return 1;
       } else if (p2Winner(currentColumn) === true) {
         return 2;
-      } 
+      }
     }
-  }
+  };
 
   const checkFirstDiagonal = () => {
     let diagonal1 = gameBoard.getBoard()[0][0].getValue();
@@ -107,8 +108,8 @@ const game = (function GameController(
       return 1;
     } else if (diagonal1 === 2 && diagonal2 === 2 && diagonal3 === 2) {
       return 2;
-    } 
-  }
+    }
+  };
 
   const checkSecondDiagonal = () => {
     let diagonal1 = gameBoard.getBoard()[0][2].getValue();
@@ -118,13 +119,15 @@ const game = (function GameController(
     if (diagonal1 && diagonal2 && diagonal3 === 1) {
       return 1;
     } else if (diagonal1 && diagonal2 && diagonal3 === 2) {
-      return 2
-    } 
-  }
+      return 2;
+    }
+  };
 
   const checkFull = () => {
-    return gameBoard.getBoard().every(row => row.every(cell => cell.getValue() !== 0));
-  }
+    return gameBoard
+      .getBoard()
+      .every((row) => row.every((cell) => cell.getValue() !== 0));
+  };
 
   const checkWinner = () => {
     let horizontal = checkHorizontal();
@@ -132,12 +135,24 @@ const game = (function GameController(
     let firstDiagonal = checkFirstDiagonal();
     let secondDiagonal = checkSecondDiagonal();
 
-    if (horizontal === 1 || vertical === 1 || firstDiagonal === 1 || secondDiagonal === 1) {
+    if (
+      horizontal === 1 ||
+      vertical === 1 ||
+      firstDiagonal === 1 ||
+      secondDiagonal === 1
+    ) {
       return 1;
-    } else if (horizontal === 2 || vertical === 2 || firstDiagonal === 2 || secondDiagonal === 2) {
+    } else if (
+      horizontal === 2 ||
+      vertical === 2 ||
+      firstDiagonal === 2 ||
+      secondDiagonal === 2
+    ) {
       return 2;
-    } else { return 0; }
-  }
+    } else {
+      return 0;
+    }
+  };
 
   const playGame = () => {
     let checkWin = checkWinner();
@@ -170,11 +185,37 @@ const game = (function GameController(
 
   // Initial play game message
   printNewRound();
-  
+
   return { playGame, getActivePlayer };
 })();
 
+const controller = (function screenController() {
+  const currentPlayerText = document.querySelector('.game-status');
+  const entireBoard = document.querySelectorAll('.grid-item');
+  let i = 0;
 
+  const example = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  gameBoard.markBoard(0, 0, 1);
+  gameBoard.markBoard(0, 1, 1);
+  gameBoard.markBoard(0, 2, 2);
 
+  const updateScreen = () => {
+    const board = gameBoard.getBoard();
+    const activePlayer = game.getActivePlayer();
 
+    currentPlayerText.textContent = `${activePlayer.name}'s turn:`;
 
+    const boardWithCellValues = board.map((row) =>
+      row.map((cell) => cell.getValue())
+    );
+
+    // board.forEach((row) => row.forEach((cell) => console.log(cell.getValue())));
+
+    entireBoard.forEach((item) => {
+      item.textContent = boardWithCellValues[i];
+      i++;
+    });
+  };
+
+  updateScreen();
+})();
