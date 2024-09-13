@@ -181,6 +181,8 @@ const game = (function GameController(
         printNewRound();
       }
     }
+
+    return { playGame, checkWinner, getActivePlayer };
   };
 
   // Initial play game message
@@ -205,14 +207,14 @@ const controller = (function screenController() {
 
     currentPlayerText.textContent = `${activePlayer.name}'s turn:`;
 
-    const boardWithCellValues = board.map((row) =>
-      row.map((cell) => cell.getValue())
-    );
-
-    // board.forEach((row) => row.forEach((cell) => console.log(cell.getValue())));
+    let currentBoard = board.flat().map((cell) => cell.getValue());
 
     entireBoard.forEach((item) => {
-      item.textContent = boardWithCellValues[i];
+      if (currentBoard[i] === 1) {
+        item.textContent = 'x';
+      } else if (currentBoard[i] === 2) {
+        item.textContent = 'o';
+      }
       i++;
     });
   };
