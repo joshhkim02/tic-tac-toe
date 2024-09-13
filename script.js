@@ -154,32 +154,18 @@ const game = (function GameController(
     }
   };
 
-  const playGame = () => {
+  const playGame = (rowChoice, columnChoice) => {
     let checkWin = checkWinner();
+      gameBoard.markBoard(rowChoice, columnChoice, getActivePlayer().mark);
+      checkWin = checkWinner();
+      if (checkWin !== 0) {
+        gameBoard.printBoard();
+        console.log(`${getActivePlayer().name} wins!`);
+      } else if (checkFull()) {
+        console.log('The game is a draw!');
 
-    while (checkWin === 0 && !checkFull()) {
-      let rowChoice = Number(prompt('Row choice:'));
-      let columnChoice = Number(prompt('Column choice:'));
-
-      if (!(gameBoard.getBoard()[rowChoice][columnChoice].getValue() === 0)) {
-        console.log('That spot is occupied already.');
-        continue; // Asks for input again
-      } else {
-        gameBoard.markBoard(rowChoice, columnChoice, getActivePlayer().mark);
-        checkWin = checkWinner();
-
-        if (checkWin !== 0) {
-          gameBoard.printBoard();
-          console.log(`${getActivePlayer().name} wins!`);
-          break;
-        } else if (checkFull()) {
-          console.log('The game is a draw!');
-          break;
-        }
-
-        switchPlayerTurn();
-        printNewRound();
-      }
+      switchPlayerTurn();
+      printNewRound();
     }
 
     return { playGame, checkWinner, getActivePlayer };
@@ -194,9 +180,7 @@ const game = (function GameController(
 const controller = (function screenController() {
   const currentPlayerText = document.querySelector('.game-status');
   const entireBoard = document.querySelectorAll('.grid-item');
-  let i = 0;
 
-  const example = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   gameBoard.markBoard(0, 0, 1);
   gameBoard.markBoard(0, 1, 1);
   gameBoard.markBoard(0, 2, 2);
@@ -204,10 +188,10 @@ const controller = (function screenController() {
   const updateScreen = () => {
     const board = gameBoard.getBoard();
     const activePlayer = game.getActivePlayer();
+    let i = 0;
+    let currentBoard = board.flat().map((cell) => cell.getValue());
 
     currentPlayerText.textContent = `${activePlayer.name}'s turn:`;
-
-    let currentBoard = board.flat().map((cell) => cell.getValue());
 
     entireBoard.forEach((item) => {
       if (currentBoard[i] === 1) {
@@ -219,5 +203,16 @@ const controller = (function screenController() {
     });
   };
 
+  const clickBoard = (e) => {
+    const grid = e.target;
+    const row = grid.dataset.row;
+    const column = grid.dataset.column;
+    game.playGame(row, column);
+    updateScreen();
+  };
+  
+  entireBoard.forEach((item) => item.addEventListener('click', clickBoard));
+
+  // Initial render
   updateScreen();
 })();
