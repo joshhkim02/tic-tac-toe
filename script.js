@@ -1,3 +1,6 @@
+const currentPlayerText = document.querySelector('.game-status');
+const entireBoard = document.querySelectorAll('.grid-item');
+
 const gameBoard = (function Gameboard() {
   const row = 3;
   const column = 3;
@@ -74,7 +77,7 @@ const game = (function GameController(
 
   const checkHorizontal = () => {
     for (let i = 0; i < 3; i++) {
-      let currentRow = gameBoard.getBoard()[i].map((cell) => cell.getValue()); // iterate through current row and return every value inside that row
+      let currentRow = gameBoard.getBoard()[i].map((cell) => cell.getValue());
       if (currentRow.every((v) => v === 1)) return 1;
       if (currentRow.every((v) => v === 2)) return 2;
     }
@@ -85,7 +88,7 @@ const game = (function GameController(
     for (let i = 0; i < 3; i++) {
       let currentColumn = gameBoard
         .getBoard()
-        .map((value) => value[i].getValue()); // iterate through current column and return every value inside that column
+        .map((value) => value[i].getValue());
         if (currentColumn.every((v) => v === 1)) return 1;
         if (currentColumn.every((v) => v === 2)) return 2;
     }
@@ -122,16 +125,18 @@ const game = (function GameController(
     let checkWin = checkWinner();
     gameBoard.markBoard(rowChoice, columnChoice, getActivePlayer().mark);
     checkWin = checkWinner();
+    // Once a winner is decided, it will keep returning the player that won
     if (checkWin !== 0) {
       gameBoard.printBoard();
       console.log(`${getActivePlayer().name} wins!`);
+      return 1;
     } else if (checkFull()) {
       console.log('The game is a draw!');
+      return 2;
     } else {
       switchPlayerTurn();
       printNewRound();
     }
-    return { playGame, checkWinner, getActivePlayer };
   };
 
   // Initial play game message
@@ -141,8 +146,7 @@ const game = (function GameController(
 })();
 
 const controller = (function screenController() {
-  const currentPlayerText = document.querySelector('.game-status');
-  const entireBoard = document.querySelectorAll('.grid-item');
+
 
   const updateScreen = () => {
     const board = gameBoard.getBoard();
@@ -163,11 +167,24 @@ const controller = (function screenController() {
   };
 
   const clickBoard = (e) => {
+    // const board = gameBoard.getBoard();
+    const activePlayer = game.getActivePlayer();
     const grid = e.target;
     const row = grid.dataset.row;
     const column = grid.dataset.column;
-    game.playGame(row, column);
-    updateScreen();
+    let result = game.playGame(row, column);
+    if (result === 1) {
+      updateScreen();
+      currentPlayerText.textContent = `${activePlayer.name} wins!`;
+      entireBoard.forEach((item) => item.removeEventListener('click', clickBoard));
+      return;
+    } else if (result === 2) {
+      updateScreen();
+      currentPlayerText.textContent = 'The game is a tie!';
+      entireBoard.forEach((item) => item.removeEventListener('click', clickBoard));
+      return;
+    }
+    else { updateScreen(); }
   };
   
   entireBoard.forEach((item) => item.addEventListener('click', clickBoard));
