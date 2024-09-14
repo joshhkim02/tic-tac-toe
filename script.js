@@ -1,6 +1,3 @@
-const currentPlayerText = document.querySelector('.game-status');
-const entireBoard = document.querySelectorAll('.grid-item');
-
 const gameBoard = (function Gameboard() {
   const row = 3;
   const column = 3;
@@ -31,7 +28,15 @@ const gameBoard = (function Gameboard() {
     console.log(boardWithCellValues);
   };
 
-  return { getBoard, markBoard, printBoard, printRow };
+  const resetBoard = () => {
+    for (let i = 0; i < row; i++) {
+      for (let j = 0; j < column; j++) {
+        board[i][j].addMark(0);
+      }
+    }
+  };
+
+  return { getBoard, markBoard, printBoard, printRow, resetBoard };
 })();
 
 function Cell() {
@@ -41,9 +46,13 @@ function Cell() {
     value = player;
   };
 
+  const resetValue = () => {
+    value = 0;
+  }
+
   const getValue = () => value;
 
-  return { addMark, getValue };
+  return { addMark, getValue, resetValue};
 }
 
 const game = (function GameController(
@@ -139,14 +148,25 @@ const game = (function GameController(
     }
   };
 
+  const resetGame = () => {
+    const board = gameBoard.getBoard();
+    board.forEach(row => row.forEach(cell => cell.addMark(0)));
+
+    activePlayer = players[0];
+
+    printNewRound();
+  }
+
   // Initial play game message
   printNewRound();
 
-  return { playGame, getActivePlayer };
+  return { playGame, getActivePlayer, resetGame};
 })();
 
 const controller = (function screenController() {
-
+  const currentPlayerText = document.querySelector('.game-status');
+  const entireBoard = document.querySelectorAll('.grid-item');
+  const restartBtn = document.querySelector('.restart-btn');
 
   const updateScreen = () => {
     const board = gameBoard.getBoard();
@@ -161,13 +181,14 @@ const controller = (function screenController() {
         item.textContent = 'X';
       } else if (currentBoard[i] === 2) {
         item.textContent = 'O';
+      } else {
+        item.textContent = '';
       }
       i++;
     });
   };
 
   const clickBoard = (e) => {
-    // const board = gameBoard.getBoard();
     const activePlayer = game.getActivePlayer();
     const grid = e.target;
     const row = grid.dataset.row;
@@ -188,6 +209,11 @@ const controller = (function screenController() {
   };
   
   entireBoard.forEach((item) => item.addEventListener('click', clickBoard));
+
+  restartBtn.addEventListener('click', () => {
+    game.resetGame();
+    updateScreen();
+  });  
 
   // Initial render
   updateScreen();
