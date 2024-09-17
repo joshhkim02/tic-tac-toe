@@ -111,15 +111,19 @@ const game = (function GameController(
 
   const playGame = (rowChoice, columnChoice) => {
     let checkWin = checkWinner();
-    gameBoard.markBoard(rowChoice, columnChoice, getActivePlayer().mark);
-    checkWin = checkWinner();
-    // Once a winner is decided, it will keep returning the player that won
-    if (checkWin !== 0) {
-      return 1;
-    } else if (checkFull()) {
-      return 2;
+    if (gameBoard.getBoard()[rowChoice][columnChoice].getValue() !== 0) {
     } else {
-      switchPlayerTurn();
+      // Do not continue game unless spot is empty
+      gameBoard.markBoard(rowChoice, columnChoice, getActivePlayer().mark);
+      checkWin = checkWinner();
+      // Once a winner is decided, it will keep returning the player that won
+      if (checkWin !== 0) {
+        return 1;
+      } else if (checkFull()) {
+        return 2;
+      } else {
+        switchPlayerTurn();
+      }
     }
   };
 
