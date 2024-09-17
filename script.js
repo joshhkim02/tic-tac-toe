@@ -154,13 +154,14 @@ const game = (function GameController(
 
     activePlayer = players[0];
 
+
     printNewRound();
   }
 
   // Initial play game message
   printNewRound();
 
-  return { playGame, getActivePlayer, resetGame};
+  return { playGame, getActivePlayer, resetGame, checkWinner};
 })();
 
 const controller = (function screenController() {
@@ -208,12 +209,13 @@ const controller = (function screenController() {
     else { updateScreen(); }
   };
   
-  entireBoard.forEach((item) => item.addEventListener('click', clickBoard));
-
   restartBtn.addEventListener('click', () => {
     game.resetGame();
     updateScreen();
+    entireBoard.forEach((item) => item.addEventListener('click', clickBoard));
   });  
+
+  entireBoard.forEach((item) => item.addEventListener('click', clickBoard));
 
   // Initial render
   updateScreen();
