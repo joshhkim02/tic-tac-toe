@@ -16,18 +16,6 @@ const gameBoard = (function Gameboard() {
     board[row][column].addMark(player);
   };
 
-  const printRow = () => {
-    const rowWithCellValues = board[0].map((cell) => cell.getValue());
-    console.log(rowWithCellValues);
-  };
-
-  const printBoard = () => {
-    const boardWithCellValues = board.map((row) =>
-      row.map((cell) => cell.getValue())
-    );
-    console.log(boardWithCellValues);
-  };
-
   const resetBoard = () => {
     for (let i = 0; i < row; i++) {
       for (let j = 0; j < column; j++) {
@@ -36,7 +24,7 @@ const gameBoard = (function Gameboard() {
     }
   };
 
-  return { getBoard, markBoard, printBoard, printRow, resetBoard };
+  return { getBoard, markBoard, resetBoard };
 })();
 
 function Cell() {
@@ -46,13 +34,9 @@ function Cell() {
     value = player;
   };
 
-  const resetValue = () => {
-    value = 0;
-  }
-
   const getValue = () => value;
 
-  return { addMark, getValue, resetValue};
+  return { addMark, getValue };
 }
 
 const game = (function GameController(
@@ -78,11 +62,6 @@ const game = (function GameController(
   };
 
   const getActivePlayer = () => activePlayer;
-
-  const printNewRound = () => {
-    gameBoard.printBoard();
-    console.log(`${getActivePlayer().name}'s turn.`);
-  };
 
   const checkHorizontal = () => {
     for (let i = 0; i < 3; i++) {
@@ -136,15 +115,11 @@ const game = (function GameController(
     checkWin = checkWinner();
     // Once a winner is decided, it will keep returning the player that won
     if (checkWin !== 0) {
-      gameBoard.printBoard();
-      console.log(`${getActivePlayer().name} wins!`);
       return 1;
     } else if (checkFull()) {
-      console.log('The game is a draw!');
       return 2;
     } else {
       switchPlayerTurn();
-      printNewRound();
     }
   };
 
@@ -153,15 +128,9 @@ const game = (function GameController(
     board.forEach(row => row.forEach(cell => cell.addMark(0)));
 
     activePlayer = players[0];
-
-
-    printNewRound();
   }
 
-  // Initial play game message
-  printNewRound();
-
-  return { playGame, getActivePlayer, resetGame, checkWinner};
+  return { playGame, getActivePlayer, resetGame};
 })();
 
 const controller = (function screenController() {
